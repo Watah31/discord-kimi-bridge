@@ -1,4 +1,4 @@
-// index.js  – discord → kimi → discord
+// index.js  – discord → kimi → discord  (health-check + bridge)
 const express = require('express');
 const axios   = require('axios');
 const FormData= require('form-data');
@@ -8,6 +8,10 @@ app.use(express.json({limit:'10mb'}));
 const DISCORD = process.env.WEBHOOK_URL;
 const KEY     = process.env.MOONSHOT_KEY;
 
+// Render health-check → 200  (stops 404 spam)
+app.get('/', (_,r)=>r.sendStatus(200));
+
+// Bridge endpoint
 app.post('/kimi', async (req,res)=>{
   try{
     const {content,attachments} = req.body;
@@ -29,5 +33,4 @@ app.post('/kimi', async (req,res)=>{
   }
 });
 
-app.get('/', (_,r)=>r.send('OK'));
 app.listen(process.env.PORT||3000);
